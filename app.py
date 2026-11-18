@@ -32,8 +32,28 @@ UPLOAD_FOLDER = BASE_DIR / "uploads"
 QUARANTINE_FOLDER = BASE_DIR / "quarantine"
 STATIC_FOLDER = BASE_DIR / "static"
 DB_PATH = BASE_DIR / "scanner.db"
-for folder in (UPLOAD_FOLDER, QUARANTINE_FOLDER, STATIC_FOLDER):
-    folder.mkdir(exist_ok=True)
+# =====================================
+# SMARTSHIELD FOLDER CONFIGURATION
+# =====================================
+
+import os
+from pathlib import Path
+
+if os.environ.get("VERCEL"):
+    BASE_DIR = Path("/tmp/smartshield")
+else:
+    BASE_DIR = Path(__file__).resolve().parent
+
+UPLOAD_FOLDER = BASE_DIR / "uploads"
+QUARANTINE_FOLDER = BASE_DIR / "quarantine"
+REPORT_FOLDER = BASE_DIR / "reports"
+
+for folder in [
+    UPLOAD_FOLDER,
+    QUARANTINE_FOLDER,
+    REPORT_FOLDER
+]:
+    folder.mkdir(parents=True, exist_ok=True)
 
 ALLOWED_EXTENSIONS = {
     "pdf","doc","docx","xls","xlsx","ppt","pptx","txt","zip","jpg","jpeg","png",
