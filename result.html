@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Scan Result · Secure Email Attachment Scanner</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<style>
+.guidance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0}
+.guidance-card{background:rgba(18,31,45,.72);border:1px solid rgba(120,170,190,.2);border-radius:16px;padding:20px}
+.guidance-card h2,.guidance-card h3{margin-top:0}
+.guidance-card ul{padding-left:20px;line-height:1.65}
+.explain-list li{margin:0 0 12px}
+.checklist{list-style:none;padding:0!important}
+.checklist li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid rgba(120,170,190,.14)}
+.check-icon{font-weight:800;min-width:22px}
+.done{color:#4adea6}.pending{color:#f4bd65}
+.action-list{counter-reset:steps;list-style:none;padding:0!important}
+.action-list li{counter-increment:steps;display:flex;gap:12px;margin:0 0 13px;line-height:1.55}
+.action-list li:before{content:counter(steps,decimal-leading-zero);color:#68dfcb;font-weight:800}
+.risk-note{padding:14px 16px;border-radius:12px;background:rgba(90,150,170,.1);border:1px solid rgba(120,170,190,.2);line-height:1.6}
+.rescan-form{margin-top:16px}
+@media(max-width:760px){.guidance-grid{grid-template-columns:1fr}}
+</style></head>
+<body><nav class="advanced-nav" style="display:flex;gap:14px;flex-wrap:wrap;margin:14px 0;padding:12px;background:#172033;border-radius:10px"><a href="/email-security">Email Security</a><a href="/analytics">Analytics</a><a href="/quarantine">Quarantine</a><a href="/reports/export/csv">CSV Report</a><a href="/reports/export/pdf">PDF Report</a><a href="/reports/export/json">JSON Report</a><a href="/users">Users</a><a href="/settings">Settings</a><form method="post" action="/logout" style="margin:0"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><button type="submit">Logout ({{current_user}})</button></form></nav>
+<nav><a class="brand" href="/">🛡️ SecureScan</a><div><a href="/">Dashboard</a><a href="/history">History</a><a href="/mobile">Mobile QR Upload</a></div></nav>
+<main>
+<header><div><p class="eyebrow">SCAN REPORT #{{result.id}}</p><h1>{{result.filename}}</h1><p>{{result.scan_time}} · {{result.scan_type}}</p></div></header>
+<section class="result-hero {{result.risk_level|lower}}"><div><span>Risk level</span><h2>{{result.risk_level}}</h2></div><div><span>Risk score</span><h2>{{result.risk_score}} / 100</h2></div><div><span>Action</span><h2>{{result.action}}</h2></div></section>
+
+<section class="panel"><h2>Scan details</h2><dl><dt>SHA-256</dt><dd class="hash">{{result.sha256}}</dd><dt>File size</dt><dd>{{result.file_size}} bytes</dd><dt>Entropy</dt><dd>{{result.entropy}} / 8</dd><dt>File type</dt><dd>{{result.file_type}}</dd></dl>
+<h3>Detected indicators</h3>{% if result.indicators %}<ul>{% for item in result.indicators %}{% if not item.startswith("OCR_TEXT:") %}<li>{{item}}</li>{% endif %}{% endfor %}</ul>{% else %}<p>No indicators detected by this scan.</p>{% endif %}
+</section>
+
+<section class="guidance-grid">
+<div class="guidance-card"><p class="eyebrow">UNDERSTAND THE RESULT</p><h2>Threat explanations</h2>
+<ul class="explain-list">{% for item in result.guidance.explanations %}<li>{{item}}</li>{% endfor %}</ul></div>
+<div class="guidance-card"><p class="eyebrow">SECURITY POSTURE</p><h2>Security checklist</h2>
+<p><strong>{{result.guidance.completed_checks}} completed</strong> · <strong>{{result.guidance.pending_checks}} pending</strong></p>
+<ul class="checklist">{% for item in result.guidance.checklist %}<li><span class="check-icon {{'done' if item.done else 'pending'}}">{{'✓' if item.done else '○'}}</span><span><strong>{{item.name}}</strong><br><small>{{item.detail}}</small></span></li>{% endfor %}</ul>
+</div>
+</section>
+
+<section class="panel"><p class="eyebrow">RISK-BASED RESPONSE</p><h2>Recommended next actions · {{result.risk_level}} risk</h2>
+<ol class="action-list">{% for item in result.guidance.actions %}<li>{{item}}</li>{% endfor %}</ol>
+<div class="risk-note"><strong>Rescan recommendation:</strong> {{result.guidance.rescan}}</div>
+<form class="rescan-form" action="/rescan/{{result.id}}" method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><button class="button" type="submit">Rescan this attachment</button></form>
+<div class="actions"><a class="button secondary" href="/download/{{result.id}}/pdf">Download PDF report</a><a class="button secondary" href="/download/{{result.id}}/json">Download JSON</a><a href="/history">Back to history</a><a href="/">Dashboard</a></div>
+</section>
+<p class="notice">A LOW result does not guarantee a file is harmless. This project performs educational static analysis; it does not execute attachments, verify sender identity, or replace a full antivirus product.</p>
+</main></body></html>

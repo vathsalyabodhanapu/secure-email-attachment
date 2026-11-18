@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Secure Email Attachment Scanner for Ransomware</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="home"><nav class="advanced-nav" style="display:flex;gap:14px;flex-wrap:wrap;margin:14px 0;padding:12px;background:#172033;border-radius:10px"><a href="/email-security">Email Security</a><a href="/analytics">Analytics</a><a href="/quarantine">Quarantine</a><a href="/reports/export/csv">CSV Report</a><a href="/reports/export/pdf">PDF Report</a><a href="/reports/export/json">JSON Report</a><a href="/users">Users</a><a href="/settings">Settings</a><form method="post" action="/logout" style="margin:0"><input type="hidden" name="csrf_token" value="{{csrf_token}}"><button type="submit">Logout ({{current_user}})</button></form></nav>
+<div class="ambient ambient-a"></div><div class="ambient ambient-b"></div>
+<nav class="topbar">
+  <a class="brand" href="/"><span class="brand-mark">S</span><span>Secure Email Attachment Scanner for Ransomware<small>RANSOMWARE PROTECTION</small></span></a>
+  <div class="navlinks"><a class="active" href="/">Overview</a><a href="/history">Scan history</a><a href="/mobile">Mobile scanner</a></div>
+  <div class="nav-status"><span class="live-dot"></span> SYSTEM ONLINE</div>
+</nav>
+<main class="home-main">
+{% with messages=get_flashed_messages() %}{% if messages %}<div class="flash">{% for m in messages %}{{m}}<br>{% endfor %}</div>{% endif %}{% endwith %}
+<section class="hero hero-v2">
+  <div class="hero-copy">
+    <div class="hero-kicker"><span class="pulse-ring"></span> SECURE EMAIL ATTACHMENT SCANNER FOR RANSOMWARE</div>
+    <div class="hero-label">YOUR DIGITAL GATEKEEPER <span>v2.6</span></div>
+    <h1>DON’T TRUST.<br><span>VERIFY.</span><br>THEN OPEN.</h1>
+    <p class="hero-desc">Stop suspicious attachments, scam messages and malicious links at the door. Secure Email Attachment Scanner for Ransomware analyzes first—so you can decide with confidence.</p>
+    <div class="hero-actions"><a class="primary-cta" href="#scan">Launch threat scan <span>↗</span></a><a class="text-cta" href="/mobile">Use your phone <span>→</span></a></div>
+    <div class="hero-trust"><span><b>01</b> ANALYZE</span><i></i><span><b>02</b> SCORE</span><i></i><span><b>03</b> PROTECT</span></div>
+  </div>
+  <div class="hero-visual visual-v2">
+    <div class="visual-grid"></div><div class="visual-cross cross-a">+</div><div class="visual-cross cross-b">+</div>
+    <div class="radar radar-outer"></div><div class="radar radar-mid"></div><div class="radar radar-inner"></div><div class="radar-sweep"></div>
+    <div class="shield-core"><div class="core-glow"></div><svg viewBox="0 0 120 140" aria-label="SmartShield protection shield"><path d="M60 7 L105 24 V62 C105 94 83 119 60 132 C37 119 15 94 15 62 V24 Z" fill="#0c1825" stroke="#64ffe0" stroke-width="2.5"/><path d="M60 20 L92 32 V62 C92 85 77 104 60 114 C43 104 28 85 28 62 V32 Z" fill="#0c2730" stroke="#1f9e8a"/><path d="M42 66 L54 78 L79 50" fill="none" stroke="#64ffe0" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="core-label">SHIELD ACTIVE</span></div>
+    <div class="scan-console"><div class="console-head"><span><i></i> LIVE THREAT ENGINE</span><b>● ONLINE</b></div><div class="console-line"><span>FILE INTEGRITY</span><strong>CHECKED <em>✓</em></strong></div><div class="console-line"><span>RISK ENGINE</span><strong>READY <em>✓</em></strong></div><div class="console-line"><span>QUARANTINE</span><strong>ARMED <em>✓</em></strong></div><div class="console-progress"><span></span></div><small>Waiting for input<span class="typing-dot">_</span></small></div>
+    <div class="floating-chip chip-threat"><span class="chip-symbol">⌁</span><div><b>THREAT DETECTION</b><small>Multi-layer analysis</small></div></div><div class="floating-chip chip-safe"><span class="chip-check">✓</span><div><b>PROTECTION READY</b><small>Local scan workspace</small></div></div>
+    <div class="visual-index">SS<span> //</span> 001</div>
+  </div>
+</section>
+<section class="feature-ribbon"><div><span class="ribbon-icon">⌘</span><b>FILE ANALYSIS</b><small>Inspect suspicious attachments</small></div><div><span class="ribbon-icon">◉</span><b>MESSAGE INTELLIGENCE</b><small>Detect scam patterns & urgency</small></div><div><span class="ribbon-icon">⌁</span><b>RISK SCORE</b><small>Understand why it’s risky</small></div><div><span class="ribbon-icon">⬡</span><b>QUARANTINE</b><small>Isolate high-risk files</small></div></section>
+<section class="metrics">
+  <div class="metric"><div class="metric-label">TOTAL SCANS <span>↗</span></div><div class="metric-value">{{stats.total}}<small>records</small></div><div class="metric-bottom"><span class="metric-bar bar-blue"></span><span>All-time scan activity</span></div></div>
+  <div class="metric"><div class="metric-label">LOW RISK <span class="status-mini green">●</span></div><div class="metric-value">{{stats.low}}<small>files</small></div><div class="metric-bottom"><span class="metric-bar bar-green"></span><span>Few indicators detected</span></div></div>
+  <div class="metric"><div class="metric-label">SUSPICIOUS <span class="status-mini amber">●</span></div><div class="metric-value">{{stats.suspicious}}<small>files</small></div><div class="metric-bottom"><span class="metric-bar bar-amber"></span><span>Needs manual review</span></div></div>
+  <div class="metric"><div class="metric-label">HIGH RISK <span class="status-mini red">●</span></div><div class="metric-value">{{stats.high}}<small>files</small></div><div class="metric-bottom"><span class="metric-bar bar-red"></span><span>Potentially dangerous</span></div></div>
+  <div class="metric"><div class="metric-label">QUARANTINED <span>⌑</span></div><div class="metric-value">{{stats.quarantined}}<small>files</small></div><div class="metric-bottom"><span class="metric-bar bar-purple"></span><span>Isolated from uploads</span></div></div>
+</section>
+<section class="workspace" id="scan">
+  <div class="section-heading"><div><div class="eyebrow">YOUR SECURITY WORKSPACE</div><h2>Choose your scan path</h2></div><span class="section-note">Select an input to begin analysis</span></div>
+  <div class="scan-options">
+    <div class="scan-card file-card"><div class="card-top"><div class="card-icon">↥</div><span class="card-number">01 / FILE</span></div><h3>Attachment scanner</h3><p>Inspect documents, archives, scripts and other email attachments for suspicious indicators.</p>
+      <form action="/scan" method="post" enctype="multipart/form-data"><input type="hidden" name="csrf_token" value="{{ csrf_token }}"><label class="drop-zone"><span class="upload-symbol">＋</span><strong>Choose a file to scan</strong><small>Click to browse · Up to 25 MB</small><input type="file" name="file" required></label><button class="scan-button">Analyze attachment <span>→</span></button></form>
+      <div class="card-feature">SHA-256 <i>·</i> Entropy <i>·</i> Signature checks</div>
+    </div>
+    <div class="scan-card mobile-card"><div class="card-top"><div class="card-icon phone-icon">▣</div><span class="card-number">02 / MOBILE</span></div><h3>Phone screenshot scanner</h3><p>Connect your phone with a QR code. Upload a suspicious message screenshot and extract its text using OCR.</p>
+      <div class="mobile-preview"><div class="phone-outline"><div class="phone-notch"></div><div class="phone-screen"><span class="msg-line"></span><span class="msg-line short"></span><span class="msg-alert">⚠ suspicious message</span><span class="msg-line"></span><span class="msg-line short"></span></div></div><div class="preview-arrow">⟶</div><div class="ocr-chip"><span>▤</span><b>OCR</b><small>Text extraction</small></div></div>
+      <a class="scan-button mobile-button" href="/mobile">Connect phone & scan <span>→</span></a><div class="card-feature">QR upload <i>·</i> OCR <i>·</i> Message threat checks</div>
+    </div>
+  </div>
+</section>
+<section class="recent-section"><div class="section-heading"><div><div class="eyebrow">LATEST ACTIVITY</div><h2>Recent scan results</h2></div><a class="view-all" href="/history">Open scan history ↗</a></div>
+<div class="recent-panel">{% if scans %}<div class="table-wrap"><table><thead><tr><th>FILE / MESSAGE</th><th>INPUT</th><th>RISK</th><th>SCORE</th><th>ACTION</th><th>SCANNED AT</th><th></th></tr></thead><tbody>{% for s in scans %}<tr><td><span class="file-bullet">◈</span>{{s.filename}}</td><td>{{s.scan_type}}</td><td><span class="badge {{s.risk_level|lower}}">{{s.risk_level}}</span></td><td><div class="score-cell"><span>{{s.risk_score}}</span><div class="score-track"><i style="width:{{s.risk_score}}%"></i></div></div></td><td>{{s.action}}</td><td>{{s.scan_time}}</td><td><a class="detail-link" href="/result/{{s.id}}">Details ↗</a></td></tr>{% endfor %}</tbody></table></div>{% else %}<div class="empty-state"><div class="empty-icon">⌁</div><h3>No scans yet</h3><p>Upload your first attachment or connect your phone to begin.</p><a href="#scan" class="text-cta">Start your first scan →</a></div>{% endif %}</div></section>
+<div class="bottom-note"><span>✳</span> Security insight: A low risk score is not a guarantee that a file is safe. Always verify unexpected attachments.</div>
+</main><footer><span>SECURESCAN <span class="brand-light">/</span> CYBERSECURITY TOOLKIT</span><span>Educational static analysis · Local processing</span></footer>
+</body></html>

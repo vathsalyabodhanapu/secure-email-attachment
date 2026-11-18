@@ -1,0 +1,10 @@
+Flask>=3.0
+Werkzeug>=3.0
+qrcode[pil]>=7.4
+Pillow>=10.0
+pytesseract>=0.3.10
+reportlab>=4.0
+# Optional: sender-domain SPF/DMARC/MX DNS inspection
+dnspython>=2.6
+# Optional: VirusTotal hash reputation lookup (requires VIRUSTOTAL_API_KEY)
+requests>=2.31
